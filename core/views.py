@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.db.models import Q
+from django.core.paginator import Paginator
 from .models import Customer, Deal, Note
 from .forms import CustomerForm, DealForm, NoteForm
 
@@ -31,8 +33,20 @@ def index(request):
 
 @login_required
 def customer_list(request):
+    query = request.GET.get('query', '')
     customers = Customer.objects.filter(created_by=request.user)
-    return render(request, 'core/customer_list.html', {'customers': customers})
+    
+    if query:
+        customers = customers.filter(Q(name__icontains=query) | Q(email__icontains=query))
+
+    paginator = Paginator(customers, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'core/customer_list.html', {
+        'customers': page_obj,
+        'query': query,
+    })
 
 @login_required
 def customer_add(request):
@@ -68,8 +82,35 @@ def customer_detail(request, pk):
 
 @login_required
 def deal_list(request):
-    deals = Deal.objects.filter(created_by=request.user).order_by('-created_at')
-    return render(request, 'core/deal_list.html', {'deals': deals})
+    query = request.GET.get('query', '')
+    deals = Deal.objects.filter(created_by=request.user)
+
+    if query:
+        deals = deals.filter(Q(title__icontains=query) | Q(customer__name__icontains=query))
+
+    paginator = Paginator(deals, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'core/deal_list.html', {
+        'deals': page_obj,
+        'query': query,
+    })
+
+@login_required
+def deal_board(request):
+    deals = Deal.objects.filter(created_by=request.user)
+    board = {
+        'new': [],
+        'contacted': [],
+        'won': [],
+        'lost': [],
+    }
+    for deal in deals:
+        if deal.status in board:
+            board[deal.status].append(deal)
+            
+    return render(request, 'core/deal_board.html', {'board': board})
 
 @login_required
 def deal_add(request):

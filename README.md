@@ -50,3 +50,36 @@ Projeyi yerel ortamınızda çalıştırmak için adımları izleyin:
    ```bash
    python manage.py runserver
    ```
+
+## 🐳 Docker ile Çalıştırma (Önerilen)
+
+Projeyi Docker ile tek komutla ayağa kaldırabilirsiniz:
+
+1. **Docker Compose'u çalıştırın:**
+   ```bash
+   docker-compose up --build
+   ```
+2. **Uygulamaya erişin:**
+   Tarayıcıda `http://localhost:8000` adresine gidin.
+
+3. **Veri oluşturun (Opsiyonel):**
+   ```bash
+   docker-compose exec web python manage.py populate_data 50
+   ```
+
+### 🛠️ Kolay Kurulum (Makefile)
+
+Komutları ezberlemek zorunda değilsiniz! Proje kök dizininde `Makefile` mevcuttur.
+
+- **Kurulum (Migrate + Seed):** `make setup`
+- **Sunucuyu Başlat:** `make up`
+- **Yönetici Oluştur:** `make createsuperuser`
+- **Veritabanını Sıfırla:** `make down` (Volume silmez)
+
+## 📸 Ekran Görüntüleri
+
+*(Buraya uygulama ekran görüntülerini ekleyebilirsiniz)*
+
+## 📄 Lisans
+
+Bu proje MIT lisansı ile lisanslanmıştır.

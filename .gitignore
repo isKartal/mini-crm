@@ -1,1 +1,22 @@
-venv/\n__pycache__/\n*.pyc\n.env\ndb.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+pg_data/

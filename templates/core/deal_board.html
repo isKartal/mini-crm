@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Fırsat Panosu (Kanban)</h2>
+    <div>
+        <a href="{% url 'deal_list' %}" class="btn btn-outline-secondary me-2">Liste Görünümü</a>
+        <a href="{% url 'deal_add' %}" class="btn btn-primary">Yeni Fırsat</a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Yeni -->
+    <div class="col-md-3">
+        <h5 class="text-primary text-center mb-3">Yeni ({{ board.new|length }})</h5>
+        <div class="bg-light p-2 rounded" style="min-height: 500px;">
+            {% for deal in board.new %}
+            {% include 'core/partials/deal_card.html' with deal=deal color='primary' %}
+            {% empty %}
+            <p class="text-muted text-center mt-3">Kayıt yok.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- İletişimde -->
+    <div class="col-md-3">
+        <h5 class="text-info text-center mb-3">İletişimde ({{ board.contacted|length }})</h5>
+        <div class="bg-light p-2 rounded" style="min-height: 500px;">
+            {% for deal in board.contacted %}
+            {% include 'core/partials/deal_card.html' with deal=deal color='info' %}
+            {% empty %}
+            <p class="text-muted text-center mt-3">Kayıt yok.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Kazanıldı -->
+    <div class="col-md-3">
+        <h5 class="text-success text-center mb-3">Kazanıldı ({{ board.won|length }})</h5>
+        <div class="bg-light p-2 rounded" style="min-height: 500px;">
+            {% for deal in board.won %}
+            {% include 'core/partials/deal_card.html' with deal=deal color='success' %}
+            {% empty %}
+            <p class="text-muted text-center mt-3">Kayıt yok.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Kaybedildi -->
+    <div class="col-md-3">
+        <h5 class="text-danger text-center mb-3">Kaybedildi ({{ board.lost|length }})</h5>
+        <div class="bg-light p-2 rounded" style="min-height: 500px;">
+            {% for deal in board.lost %}
+            {% include 'core/partials/deal_card.html' with deal=deal color='danger' %}
+            {% empty %}
+            <p class="text-muted text-center mt-3">Kayıt yok.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
