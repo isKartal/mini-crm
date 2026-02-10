@@ -14,28 +14,72 @@
 
 {% if user.is_authenticated %}
 <div class="row">
-    <div class="col-md-6 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card text-white bg-primary h-100">
             <div class="card-body">
                 <div class="card-title display-4 text-center">{{ customers_count }}</div>
                 <p class="card-text text-center">Toplam Müşteri</p>
             </div>
             <div class="card-footer text-center">
-                <a href="{% url 'customer_list' %}" class="text-white">Detaylar</a>
+                <a href="{% url 'customer_list' %}" class="text-white text-decoration-none">Detaylar <i
+                        class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card text-white bg-success h-100">
             <div class="card-body">
                 <div class="card-title display-4 text-center">{{ deals_count }}</div>
                 <p class="card-text text-center">Toplam Satış Fırsatı</p>
             </div>
             <div class="card-footer text-center">
-                <a href="{% url 'deal_list' %}" class="text-white">Detaylar</a>
+                <a href="{% url 'deal_list' %}" class="text-white text-decoration-none">Detaylar <i
+                        class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-white font-weight-bold">
+                <i class="bi bi-pie-chart-fill text-primary"></i> Satış Dağılımı
+            </div>
+            <div class="card-body">
+                <canvas id="dealChart"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('dealChart').getContext('2d');
+        var dealChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ deal_labels_json| safe }},
+        datasets: [{
+            data: {{ deal_data_json| safe }},
+        backgroundColor: [
+            '#0d6efd', // Primary (Yeni)
+            '#ffc107', // Warning (İletişimde)
+            '#198754', // Success (Kazanıldı)
+            '#dc3545'  // Danger (Kaybedildi)
+        ],
+        borderWidth: 1
+                }]
+            },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'right',
+            }
+        }
+    }
+        });
+    });
+</script>
 {% endif %}
 {% endblock %}

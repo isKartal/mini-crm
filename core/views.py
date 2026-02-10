@@ -19,15 +19,26 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+import json
+
 @login_required
 def index(request):
     customers_count = Customer.objects.filter(created_by=request.user).count()
     deals_count = Deal.objects.filter(created_by=request.user).count()
-    # recent_notes = Note.objects.filter(created_by=request.user).order_by('-created_at')[:5] # Optional
+    
+    # Chart Data
+    deal_counts = {
+        'Yeni': Deal.objects.filter(created_by=request.user, status=Deal.NEW).count(),
+        'İletişimde': Deal.objects.filter(created_by=request.user, status=Deal.CONTACTED).count(),
+        'Kazanıldı': Deal.objects.filter(created_by=request.user, status=Deal.WON).count(),
+        'Kaybedildi': Deal.objects.filter(created_by=request.user, status=Deal.LOST).count(),
+    }
     
     context = {
         'customers_count': customers_count,
         'deals_count': deals_count,
+        'deal_data_json': json.dumps(list(deal_counts.values())),
+        'deal_labels_json': json.dumps(list(deal_counts.keys())),
     }
     return render(request, 'index.html', context)
 
@@ -43,7 +54,11 @@ def customer_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'core/customer_list.html', {
+    template_name = 'core/customer_list.html'
+    if request.headers.get('HX-Request'):
+        template_name = 'core/partials/customer_table.html'
+
+    return render(request, template_name, {
         'customers': page_obj,
         'query': query,
     })
@@ -92,7 +107,11 @@ def deal_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'core/deal_list.html', {
+    template_name = 'core/deal_list.html'
+    if request.headers.get('HX-Request'):
+        template_name = 'core/partials/deal_table.html'
+
+    return render(request, template_name, {
         'deals': page_obj,
         'query': query,
     })
