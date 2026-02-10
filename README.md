@@ -23,7 +23,7 @@ Projeyi yerel ortamınızda çalıştırmak için adımları izleyin:
 
 1. **Repoyu klonlayın:**
    ```bash
-   git clone https://github.com/kullaniciadi/mini-crm.git
+   git clone https://github.com/isKartal/mini-crm.git
    cd mini-crm
    ```
 
@@ -50,11 +50,3 @@ Projeyi yerel ortamınızda çalıştırmak için adımları izleyin:
    ```bash
    python manage.py runserver
    ```
-
-## 📸 Ekran Görüntüleri
-
-*(Buraya uygulama ekran görüntülerini ekleyebilirsiniz)*
-
-## 📄 Lisans
-
-Bu proje MIT lisansı ile lisanslanmıştır.
