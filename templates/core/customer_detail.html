@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3>{{ customer.name }}</h3>
+        <a href="{% url 'customer_list' %}" class="btn btn-secondary">Geri Dön</a>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Email:</strong> {{ customer.email }}</p>
+                <p><strong>Telefon:</strong> {{ customer.phone|default:"-" }}</p>
+                <p><strong>Adres:</strong> {{ customer.address|default:"-" }}</p>
+                <p><strong>Kayıt Tarihi:</strong> {{ customer.created_at }}</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Fırsatlar</h4>
+                <a href="{% url 'deal_add' %}" class="btn btn-sm btn-outline-primary mb-2">Fırsat Ekle</a>
+                {% if customer.deals.all %}
+                <ul class="list-group">
+                    {% for deal in customer.deals.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ deal.title }}
+                        <span
+                            class="badge {% if deal.status == 'new' %}bg-primary{% elif deal.status == 'contacted' %}bg-info{% elif deal.status == 'won' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ deal.get_status_display }}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">Bu müşteri için fırsat yok.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Notlar</h4>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ note_form.as_p }}
+                            <button type="submit" class="btn btn-primary btn-sm">Not Ekle</button>
+                        </form>
+                    </div>
+                </div>
+
+                {% if customer.notes.all %}
+                <div class="list-group">
+                    {% for note in customer.notes.all|dictsortreversed:"created_at" %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ note.created_by.username }}</h6>
+                            <small>{{ note.created_at|date:"d M Y H:i" }}</small>
+                        </div>
+                        <p class="mb-1">{{ note.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">Henüz not eklenmemiş.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
